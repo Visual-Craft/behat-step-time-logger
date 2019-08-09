@@ -1,9 +1,9 @@
 {
-    "name": "bex/behat-step-time-logger",
+    "name": "visual-craft/behat-step-time-logger",
     "type": "library",
     "description": "Extension for behat to help find slow scenario steps by logging the step times",
     "keywords": ["tdd","bdd","behat"],
-    "homepage": "https://github.com/tkotosz/behat-step-time-logger",
+    "homepage": "https://github.com/visual-craft/behat-step-time-logger",
     "license": "MIT",
     "authors": [
         {

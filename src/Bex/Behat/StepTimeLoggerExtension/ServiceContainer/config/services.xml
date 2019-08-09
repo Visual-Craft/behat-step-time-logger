@@ -19,6 +19,7 @@
             <tag name="event_dispatcher.subscriber" />
             <argument type="service" id="bex.step_time_logger_extension.config" />
             <argument type="service" id="bex.step_time_logger_extension.step_time_logger" />
+            <argument type="service" id="definition.finder" />
         </service>
 
         <!-- output printers -->

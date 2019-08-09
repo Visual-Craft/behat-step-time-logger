@@ -74,6 +74,14 @@ class StepTimeLogger
      */
     public function executionInformationGenerator()
     {
+        $getTotalCosts = function ($executionTimes) {
+            return count($executionTimes) * round(array_sum($executionTimes) / count($executionTimes), 5);
+        };
+
+        usort($this->executionTimes, function($a, $b) use ($getTotalCosts) {
+            return $getTotalCosts($a) < $getTotalCosts($b);
+        });
+
         foreach ($this->executionTimes as $stepName => $executionTimes) {
             $totalExecutions = count($executionTimes);
             $avgExecutionTime = round(array_sum($executionTimes) / $totalExecutions, 5);

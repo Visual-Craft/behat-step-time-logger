@@ -2,10 +2,10 @@
 
 namespace Bex\Behat\StepTimeLoggerExtension\Listener;
 
+use Behat\Behat\Definition\DefinitionFinder;
 use Behat\Behat\EventDispatcher\Event\AfterStepTested;
 use Behat\Behat\EventDispatcher\Event\BeforeStepTested;
 use Behat\Behat\EventDispatcher\Event\StepTested;
-use Behat\Testwork\EventDispatcher\Event\AfterSuiteTested;
 use Behat\Testwork\EventDispatcher\Event\SuiteTested;
 use Bex\Behat\StepTimeLoggerExtension\ServiceContainer\Config;
 use Bex\Behat\StepTimeLoggerExtension\Service\StepTimeLogger;
@@ -24,13 +24,20 @@ final class StepTimeLoggerListener implements EventSubscriberInterface
     private $stepTimeLogger;
 
     /**
-     * @param Config         $config
-     * @param StepTimeLogger $stepTimeLogger
+     * @var DefinitionFinder
      */
-    public function __construct(Config $config, StepTimeLogger $stepTimeLogger)
+    private $definitionFinder;
+
+    /**
+     * @param Config $config
+     * @param StepTimeLogger $stepTimeLogger
+     * @param DefinitionFinder $definitionFinder
+     */
+    public function __construct(Config $config, StepTimeLogger $stepTimeLogger, DefinitionFinder $definitionFinder)
     {
         $this->config = $config;
         $this->stepTimeLogger = $stepTimeLogger;
+        $this->definitionFinder = $definitionFinder;
     }
 
     /**
@@ -51,7 +58,7 @@ final class StepTimeLoggerListener implements EventSubscriberInterface
     public function stepStarted(BeforeStepTested $event)
     {
         if ($this->config->isEnabled()) {
-            $this->stepTimeLogger->logStepStarted($event->getStep()->getText());
+            $this->stepTimeLogger->logStepStarted($this->getKey($event));
         }
     }
 
@@ -61,7 +68,7 @@ final class StepTimeLoggerListener implements EventSubscriberInterface
     public function stepFinished(AfterStepTested $event)
     {
         if ($this->config->isEnabled()) {
-            $this->stepTimeLogger->logStepFinished($event->getStep()->getText());
+            $this->stepTimeLogger->logStepFinished($this->getKey($event));
         }
     }
 
@@ -77,5 +84,20 @@ final class StepTimeLoggerListener implements EventSubscriberInterface
 
             $this->stepTimeLogger->clearLogs();
         }
+    }
+
+    /**
+     * @param StepTested $event
+     * @return string
+     */
+    private function getKey(StepTested $event)
+    {
+        $definition = $this->definitionFinder->findDefinition(
+            $event->getEnvironment(),
+            $event->getFeature(),
+            $event->getStep()
+        );
+
+        return $definition->getMatchedDefinition()->getPattern();
     }
 }
