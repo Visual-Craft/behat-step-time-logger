@@ -78,7 +78,7 @@ class StepTimeLogger
             return count($executionTimes) * round(array_sum($executionTimes) / count($executionTimes), 5);
         };
 
-        usort($this->executionTimes, function($a, $b) use ($getTotalCosts) {
+        uasort($this->executionTimes, function($a, $b) use ($getTotalCosts) {
             return $getTotalCosts($a) < $getTotalCosts($b);
         });
 
